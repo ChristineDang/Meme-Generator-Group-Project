@@ -1,0 +1,32 @@
+/* centering and styling search bar */
+input{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    border-style: solid;
+}
+
+/*center  and styling meme display */
+.meme-display{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    border-style: solid;
+}
+
+/* style and center generator button */
+button{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+    border-style: solid;
+    
+    /*add custom button file here */ 
+}
+   
+}
+
+/*meme card styling */
