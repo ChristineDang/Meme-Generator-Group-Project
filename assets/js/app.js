@@ -37,8 +37,16 @@ function generateMeme(topic){
 
 
     newCard.append(newHeader).append(newBody);
+    $("#meme-display").empty();
     $("#meme-display").append(newCard);
 
 }
 
-generateMeme(searchTopic);
+function validateForm(){
+    searchTopic = $("#topic").val().trim();
+    if(searchTopic == ""){
+        alert("Enter Search Query");
+    } else {
+        generateMeme(searchTopic);
+    }
+}
