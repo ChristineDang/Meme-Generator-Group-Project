@@ -17,7 +17,7 @@ function fetchCaption(topic){
     var heading = $("<h3>");
     if(results.length > 1){
         var selection = Math.floor((Math.random() * results.length));
-        caption = results[selection];
+        caption = results[i].trim();
         heading.text(caption);
     } else {
         caption = topic + " be like";
@@ -26,8 +26,9 @@ function fetchCaption(topic){
     return heading;
 }
 
+
+
 function generateMeme(topic){
-    $("#meme-display").empty();
     //var gif = fetchGIF(topic);
     var caption = fetchCaption(topic);
     
@@ -44,6 +45,7 @@ function generateMeme(topic){
 
 
     newCard.append(newHeader).append(newBody);
+    $("#meme-display").empty();
     $("#meme-display").append(newCard);
 
 }
@@ -56,6 +58,7 @@ function validateForm(){
         generateMeme(searchTopic);
     }
 }
+
 
 $(document).ready(function() {
 
@@ -81,18 +84,25 @@ $(document).ready(function() {
             }).then(function(response) {
                 var item = response[1].data.children;
                 for(var i = 0; i < item.length; i++){
-                    if(item[i].data.body){
-                        var text = item[i].data.body;
-                        if(text.length < 60){
-                            if(text != "[removed]" && text != "[deleted]"){
-                                results.push(item[i].data.body);
-                            }
-                        }
-                    }
+                    results.push(item[i].data.body);
                 }
             });
         }
-
     });
 });
 
+/*
+var promises = [];
+for(i=0;i<5;i+){
+    promises.push(doSomeAsyncStuff());
+}
+Promise.all(promises)
+    .then(() => {
+        for(i=0;i<5;i+){
+            doSomeStuffOnlyWhenTheAsyncStuffIsFinish();    
+        }
+    })
+    .catch((e) => {
+        // handle errors here
+    });
+*/
