@@ -4,12 +4,29 @@ var searchTopic = "testing";
 var results = [];
 
 function fetchGIF(topic){
-    /* TO DO
-    get gif from giphy using topic
-    create HTML <img> element with JQuery using gif as src. 
-    flip a coin (random # between 0 and 1) to determine if gif or still frame? **MAYBE!!! 
-    return <img> element
-    */
+    return new Promise((resolve,reject)=>{
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        topic + "&api_key=Sg4YQq4nInHRFLJvmZtJXGfmzceE6X39&limit=100"; 
+    
+       // AJax GET request
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(response) {
+            var results = response.data;  
+            var selection = Math.floor(Math.random()*results.length);
+            var url = results[selection].images.fixed_height.url;
+            var giphyDiv = $("<div>");
+            var giphyImage = $("<img>");
+            giphyImage.attr("src", url);
+            giphyDiv.append(giphyImage);
+            if(url){
+                resolve(giphyDiv);
+            } else{
+                reject("error");
+            }
+        });
+    }) 
 }
 
 //==========================================================================================================
@@ -82,24 +99,21 @@ async function getCaption(topic){
     })
 }
 
-async function fetchCaption(){
-    await getCaption("your mom").then((heading)=>{
-        var caption = heading;
-        return (caption);
-    });
-}
 //==========================================================================================================
 //==========================================================================================================
 
 
 
-function generateMeme(topic){
+async function generateMeme(topic){
     $("#meme-display").empty();
-    //var gif = fetchGIF(topic);
-    var caption = fetchCaption(topic);
-    
-    var gif = $("<img>").attr("src", "assets/images/test.gif");
-    //var caption = $("<h3>").text(topic);
+    var caption;
+    var gif;
+    await getCaption(topic).then((heading)=>{
+        caption = heading;
+    });
+    await fetchGIF(topic).then((giphy)=>{
+        gif = giphy;
+    })
 
     var newCard = $("<div>").addClass("card card-default");
 
