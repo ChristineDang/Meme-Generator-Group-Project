@@ -59,3 +59,25 @@ input{
     opacity: 0.5;
     font-size: smaller;
  }
+
+ .jumbotron {
+  margin-top: auto;
+  background-image: url("../images/jtImg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+#title {
+  color: white;
+  text-align: center;
+}
+
+#jtText {
+  color: white;
+  text-align: center;
+}
+
+#sticky-footer {
+  background-image: url("../images/jtImg.jpg");
+}
