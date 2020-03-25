@@ -2,9 +2,35 @@ var memeDisplay = $("#meme-display");
 var generatorButton = $("#generator-button");
 var searchTopic = "testing";
 var results = [];
-//var promises = [];
 
 function fetchGIF(topic){
+        
+       //================================== API KEY ======================= 
+       var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+         topic + "&api_key=Sg4YQq4nInHRFLJvmZtJXGfmzceE6X39&limit=10"; 
+  
+        // AJax GET request
+        $.ajax({
+        url: queryURL,
+        method: "GET"
+        })       
+
+        // After the data from API comes back
+        .then(function(response) {
+  
+            // Storing in results Variables
+            var results = response.data;  
+
+            var selection = Math.floor(Math.random()*results.length);
+            var url = results[selection].images.fixed_height.url;
+            var giphyDiv = $("<div>");
+            var giphyImage = $("<img>");
+            giphyImage.attr("src", url);
+            giphyDiv.append(giphyImage);
+            $("#test").append(giphyDiv);
+
+      });          
+
     /* TO DO
     get gif from giphy using topic
     create HTML <img> element with JQuery using gif as src. 
@@ -13,74 +39,89 @@ function fetchGIF(topic){
     */
 }
 
-function captionTest(topic){
-    return new Promise((resolve, reject)=>{
-        var queryURL = "http://www.reddit.com/search.json?q=" + topic + "&sort=comments&limit=10";
-        var posts = [];
-        var urls = [];
-        var promises = [];
+//==========================================================================================================
+//==========================================================================================================
+async function getCaption(topic){
+    var results = [];
+    var heading = $("<h4>");
 
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).then(function(response) {
-            posts = response.data.children;
-        }).then(function(response){
-            for(var i = 0; i < posts.length; i++){
-                var id = posts[i].data.id;
-                var sub = posts[i].data.subreddit;
-                queryURL = "http://www.reddit.com/r/" + sub + "/comments/" + id + ".json?";
-                urls.push(queryURL);
-            }
-            for(var i = 0; i < urls.length; i++){
-                promises.push(captionTestPartTwo(urls[i]));
-            }
-            resolve(promises);
-        });
-    })
-
-}
-
-function captionTestPartTwo(queryURL){
-    return new Promise((resolve, reject)=>{
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).then(function(response) {
-            var item = response[1].data.children;
-            for(var i = 0; i < item.length; i++){
-                if(item[i].data.body){
-                    var text = item[i].data.body;
-                    if(text.length < 60){
-                        if(text != "[removed]" && text != "[deleted]"){
-                            results.push(item[i].data.body);
+    function getListOfPromisesFromReddit(topic){
+        return new Promise((resolve, reject)=>{
+            var queryURL = "http://www.reddit.com/search.json?q=" + topic + "&sort=comments&limit=10";
+            var posts = [];
+            var urls = [];
+            var promises = [];
+    
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response) { 
+                posts = response.data.children;
+            }).then(function(response){
+                for(var i = 0; i < posts.length; i++){
+                    var id = posts[i].data.id;
+                    var sub = posts[i].data.subreddit;
+                    queryURL = "http://www.reddit.com/r/" + sub + "/comments/" + id + ".json?";
+                    urls.push(queryURL);
+                }
+                for(var i = 0; i < urls.length; i++){
+                    promises.push(retrieveComments(urls[i]));
+                }
+                resolve(promises);
+            });
+        })
+    
+    }
+    
+    function retrieveComments(queryURL){
+        return new Promise((resolve, reject)=>{
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response) {
+                var item = response[1].data.children;
+                for(var i = 0; i < item.length; i++){
+                    if(item[i].data.body){
+                        var text = item[i].data.body;
+                        if(text.length < 60){
+                            if(text != "[removed]" && text != "[deleted]"){
+                                results.push(item[i].data.body);
+                            }
                         }
                     }
                 }
-            }
-            console.log(results);
-            resolve("true");
+                resolve("true");
+            });
+        })
+    }
+
+    return new Promise((resolve, reject)=>{
+        getListOfPromisesFromReddit(topic).then(response =>{
+            Promise.all(response).then(()=>{
+                var selection = Math.floor(Math.random() * results.length);
+                var caption = results[selection].trim();
+                heading.text(caption);
+                resolve(heading);
+            }).catch((e)=>{
+                reject("error");
+            });
         });
     })
 }
 
-function fetchCaption(topic){
-    var caption;
-    var heading = $("<h3>");
-    if(results.length > 1){
-        var selection = Math.floor((Math.random() * results.length));
-        caption = results[i].trim();
-        heading.text(caption);
-    } else {
-        caption = topic + " be like";
-        heading.text(caption);
-    }
-    return heading;
+async function fetchCaption(){
+    await getCaption("your mom").then((heading)=>{
+        var caption = heading;
+        return (caption);
+    });
 }
+//==========================================================================================================
+//==========================================================================================================
 
 
 
 function generateMeme(topic){
+    $("#meme-display").empty();
     //var gif = fetchGIF(topic);
     var caption = fetchCaption(topic);
     
@@ -97,7 +138,6 @@ function generateMeme(topic){
 
 
     newCard.append(newHeader).append(newBody);
-    $("#meme-display").empty();
     $("#meme-display").append(newCard);
 
 }
@@ -111,26 +151,4 @@ function validateForm(){
     }
 }
 
-
-var promises = captionTest("your mom");
-Promise.all(promises).then(()=>{
-
-}).catch((e)=>{
-    
-});
-
-/*
-var promises = [];
-for(i=0;i<5;i+){
-    promises.push(doSomeAsyncStuff());
-}
-Promise.all(promises)
-    .then(() => {
-        for(i=0;i<5;i+){
-            doSomeStuffOnlyWhenTheAsyncStuffIsFinish();    
-        }
-    })
-    .catch((e) => {
-        // handle errors here
-    });
-*/
+fetchGIF("your mom");
