@@ -57,7 +57,7 @@ input{
 
  }
 
- .jumbotron {
+ .jumbotron{
   margin-top: auto;
   background-image: url("../images/2.png");
   background-size: cover;
@@ -75,6 +75,6 @@ input{
   text-align: center;
 }
 
-#sticky-footer {
+#footer-copyright {
   background-image: url("../images/2.png");
 }
