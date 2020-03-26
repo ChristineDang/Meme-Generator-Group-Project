@@ -34,7 +34,7 @@ input{
 }
 /* style and center generator button */
 #generator-button{
-    background-image: linear-gradient(to right,blue , red);
+    background-image: linear-gradient(to right,blue ,purple);
     background-repeat: no-repeat;
     display: block;
     margin-left: auto;
