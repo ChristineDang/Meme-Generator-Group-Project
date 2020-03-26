@@ -54,10 +54,7 @@ input{
     box-shadow: 0 5px #666;
     transform: translateY(4px);
   }
-/* button hover */
-  .btn:hover {
-    opacity: 0.5;
-    font-size: smaller;
+
  }
 
  .jumbotron {
@@ -69,15 +66,15 @@ input{
 }
 
 #title {
-  color: white;
+  color: Black;
   text-align: center;
 }
 
 #jtText {
-  color: white;
+  color: black;
   text-align: center;
 }
 
 #sticky-footer {
-  background-image: url("../images/jtImg.jpg");
+  background-image: url("../images/2.png");
 }
